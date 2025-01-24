@@ -1,98 +1,97 @@
-import { ValidationRule } from './types'
-import { ImageValue } from '@sanity/types'
+import { defineType, defineField } from 'sanity'
 
-export const event = {
+export const event = defineType({
   name: 'event',
   title: 'Events',
   type: 'document',
   fields: [
-    {
+    defineField({
       name: 'title',
       title: 'Event Title',
       type: 'string',
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'showOnWebsite',
       title: 'Show on Website',
       type: 'boolean',
       description: 'Toggle to control whether this event appears on the public website',
       initialValue: true,
-    },
-    {
+    }),
+    defineField({
       name: 'date',
       title: 'Event Date',
       type: 'date',
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'time',
       title: 'Event Time',
       type: 'object',
       fields: [
-        {
+        defineField({
           name: 'hour',
           title: 'Hour',
           type: 'number',
           options: {
             list: Array.from({ length: 12 }, (_, i) => i + 1),
           },
-          validation: (Rule: ValidationRule) => Rule.required(),
-        },
-        {
+          validation: rule => rule.required(),
+        }),
+        defineField({
           name: 'minute',
           title: 'Minute',
           type: 'number',
           options: {
             list: [0, 15, 30, 45],
           },
-          validation: (Rule: ValidationRule) => Rule.required(),
-        },
-        {
+          validation: rule => rule.required(),
+        }),
+        defineField({
           name: 'period',
           title: 'AM/PM',
           type: 'string',
           options: {
             list: ['AM', 'PM'],
           },
-          validation: (Rule: ValidationRule) => Rule.required(),
-        },
+          validation: rule => rule.required(),
+        }),
       ],
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'description',
       title: 'Description',
       type: 'array',
       of: [{ type: 'block' }],
-    },
-    {
+    }),
+    defineField({
       name: 'location',
       title: 'Location',
       type: 'reference',
       to: [{ type: 'location' }],
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'featuredImage',
       title: 'Featured Image',
       type: 'image',
       options: {
         hotspot: true,
       },
-    },
-    {
+    }),
+    defineField({
       name: 'registrationRequired',
       title: 'Registration Required',
       type: 'boolean',
       initialValue: false,
-    },
-    {
+    }),
+    defineField({
       name: 'registrationLink',
       title: 'Registration Link',
       type: 'url',
-      hidden: ({ document }: { document: { registrationRequired?: boolean } }) => !document?.registrationRequired,
-    },
+      hidden: ({ document }) => !document?.registrationRequired,
+    }),
   ],
   preview: {
     select: {
@@ -105,27 +104,19 @@ export const event = {
       media: 'featuredImage',
       showOnWebsite: 'showOnWebsite',
     },
-    prepare({ title, date, hour, minute, period, locationName, media, showOnWebsite }: { 
-      title?: string; 
-      date?: string; 
-      hour?: number; 
-      minute?: number; 
-      period?: string;
-      locationName?: string;
-      media?: ImageValue;
-      showOnWebsite?: boolean;
-    }) {
+    prepare(selection) {
+      const {title, date, hour, minute, period, locationName, media, showOnWebsite} = selection
       const formattedTime = hour && minute && period 
         ? `${hour}:${minute.toString().padStart(2, '0')} ${period}`
-        : 'Time not set';
-      const formattedDate = date ? new Date(date).toLocaleDateString() : 'Date not set';
-      const visibility = showOnWebsite ? '' : ' [Hidden]';
+        : 'Time not set'
+      const formattedDate = date ? new Date(date).toLocaleDateString() : 'Date not set'
+      const visibility = showOnWebsite ? '' : ' [Hidden]'
 
       return {
         title: `${title || 'Untitled Event'}${visibility}`,
         subtitle: `${formattedDate} at ${formattedTime}${locationName ? ` - ${locationName}` : ''}`,
         media,
-      };
+      }
     },
   },
-} 
+}) 

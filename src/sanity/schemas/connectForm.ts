@@ -1,46 +1,46 @@
-import { ValidationRule } from './types'
+import { defineType, defineField } from 'sanity'
 
-export const connectForm = {
+export const connectForm = defineType({
   name: 'connectForm',
   title: 'Connect Form Submissions',
   type: 'document',
   fields: [
-    {
+    defineField({
       name: 'name',
       title: 'Full Name',
       type: 'string',
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'email',
       title: 'Email',
       type: 'string',
-      validation: (Rule: ValidationRule) => Rule.required().email(),
-    },
-    {
+      validation: rule => rule.required().email(),
+    }),
+    defineField({
       name: 'phone',
       title: 'Phone',
       type: 'string',
-    },
-    {
+    }),
+    defineField({
       name: 'isNewVisitor',
       title: 'Is New Visitor',
       type: 'boolean',
       initialValue: true,
-    },
-    {
+    }),
+    defineField({
       name: 'message',
       title: 'Message',
       type: 'text',
       rows: 4,
-    },
-    {
+    }),
+    defineField({
       name: 'submittedAt',
       title: 'Submitted At',
       type: 'datetime',
       readOnly: true,
-    },
-    {
+    }),
+    defineField({
       name: 'status',
       title: 'Status',
       type: 'string',
@@ -53,13 +53,13 @@ export const connectForm = {
         ],
       },
       initialValue: 'new',
-    },
-    {
+    }),
+    defineField({
       name: 'notes',
       title: 'Internal Notes',
       type: 'text',
       rows: 3,
-    },
+    }),
   ],
   preview: {
     select: {
@@ -67,11 +67,12 @@ export const connectForm = {
       subtitle: 'email',
       status: 'status',
     },
-    prepare({ title, subtitle, status }: { title?: string; subtitle?: string; status?: string }) {
+    prepare(selection) {
+      const {title, subtitle, status} = selection
       return {
         title: title || 'Unnamed Contact',
         subtitle: `${subtitle} (${status})`,
       }
     },
   },
-} 
+}) 

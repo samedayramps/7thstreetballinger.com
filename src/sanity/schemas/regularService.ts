@@ -1,17 +1,17 @@
-import { ValidationRule } from './types'
+import { defineType, defineField } from 'sanity'
 
-export const regularService = {
+export const regularService = defineType({
   name: 'regularService',
   title: 'Regular Services',
   type: 'document',
   fields: [
-    {
+    defineField({
       name: 'name',
       title: 'Service Name',
       type: 'string',
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'dayOfWeek',
       title: 'Day of Week',
       type: 'string',
@@ -26,57 +26,57 @@ export const regularService = {
           'Saturday',
         ],
       },
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'time',
       title: 'Service Time',
       type: 'object',
       fields: [
-        {
+        defineField({
           name: 'hour',
           title: 'Hour',
           type: 'number',
           options: {
             list: Array.from({ length: 12 }, (_, i) => i + 1),
           },
-          validation: (Rule: ValidationRule) => Rule.required(),
-        },
-        {
+          validation: rule => rule.required(),
+        }),
+        defineField({
           name: 'minute',
           title: 'Minute',
           type: 'number',
           options: {
             list: [0, 15, 30, 45],
           },
-          validation: (Rule: ValidationRule) => Rule.required(),
-        },
-        {
+          validation: rule => rule.required(),
+        }),
+        defineField({
           name: 'period',
           title: 'AM/PM',
           type: 'string',
           options: {
             list: ['AM', 'PM'],
           },
-          validation: (Rule: ValidationRule) => Rule.required(),
-        },
+          validation: rule => rule.required(),
+        }),
       ],
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'description',
       title: 'Description',
       type: 'text',
       rows: 3,
-    },
-    {
+    }),
+    defineField({
       name: 'location',
       title: 'Location',
       type: 'reference',
       to: [{ type: 'location' }],
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'serviceType',
       title: 'Service Type',
       type: 'string',
@@ -90,14 +90,14 @@ export const regularService = {
           'Other',
         ],
       },
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'order',
       title: 'Display Order',
       type: 'number',
-      validation: (Rule: ValidationRule) => Rule.required().min(0),
-    },
+      validation: rule => rule.required().min(0),
+    }),
   ],
   orderings: [
     {
@@ -115,22 +115,16 @@ export const regularService = {
       period: 'time.period',
       locationName: 'location.name',
     },
-    prepare({ title, dayOfWeek, hour, minute, period, locationName }: { 
-      title?: string; 
-      dayOfWeek?: string; 
-      hour?: number; 
-      minute?: number; 
-      period?: string;
-      locationName?: string;
-    }) {
+    prepare(selection) {
+      const {title, dayOfWeek, hour, minute, period, locationName} = selection
       const formattedTime = hour && minute && period 
         ? `${hour}:${minute.toString().padStart(2, '0')} ${period}`
-        : 'Time not set';
+        : 'Time not set'
 
       return {
         title: title || 'Untitled Service',
         subtitle: `${dayOfWeek || 'Day not set'} at ${formattedTime}${locationName ? ` - ${locationName}` : ''}`,
-      };
+      }
     },
   },
-} 
+}) 

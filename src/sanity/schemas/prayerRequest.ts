@@ -1,43 +1,43 @@
-import { ValidationRule } from './types'
+import { defineType, defineField } from 'sanity'
 
-export const prayerRequest = {
+export const prayerRequest = defineType({
   name: 'prayerRequest',
   title: 'Prayer Requests',
   type: 'document',
   fields: [
-    {
+    defineField({
       name: 'name',
       title: 'Name',
       type: 'string',
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'email',
       title: 'Email',
       type: 'string',
-      validation: (Rule: ValidationRule) => Rule.email(),
-    },
-    {
+      validation: rule => rule.email(),
+    }),
+    defineField({
       name: 'isConfidential',
       title: 'Keep Request Confidential',
       type: 'boolean',
       description: 'If checked, this request will only be shared with pastoral staff',
       initialValue: false,
-    },
-    {
+    }),
+    defineField({
       name: 'request',
       title: 'Prayer Request',
       type: 'text',
       rows: 6,
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'submittedAt',
       title: 'Submitted At',
       type: 'datetime',
       readOnly: true,
-    },
-    {
+    }),
+    defineField({
       name: 'status',
       title: 'Status',
       type: 'string',
@@ -50,19 +50,19 @@ export const prayerRequest = {
         ],
       },
       initialValue: 'new',
-    },
-    {
+    }),
+    defineField({
       name: 'followUp',
       title: 'Requires Follow Up',
       type: 'boolean',
       initialValue: false,
-    },
-    {
+    }),
+    defineField({
       name: 'pastoralNotes',
       title: 'Pastoral Notes',
       type: 'text',
       rows: 3,
-    },
+    }),
   ],
   preview: {
     select: {
@@ -71,12 +71,8 @@ export const prayerRequest = {
       confidential: 'isConfidential',
       status: 'status',
     },
-    prepare({ title, subtitle, confidential, status }: { 
-      title?: string; 
-      subtitle?: string; 
-      confidential?: boolean;
-      status?: string;
-    }) {
+    prepare(selection) {
+      const {title, subtitle, confidential, status} = selection
       const truncatedRequest = subtitle ? subtitle.slice(0, 50) + (subtitle.length > 50 ? '...' : '') : ''
       const confidentialPrefix = confidential ? '[Confidential] ' : ''
       return {
@@ -85,4 +81,4 @@ export const prayerRequest = {
       }
     },
   },
-} 
+}) 

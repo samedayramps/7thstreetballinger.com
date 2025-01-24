@@ -1,68 +1,67 @@
-import { ValidationRule } from './types'
-import { ImageValue } from '@sanity/types'
+import { defineType, defineField } from 'sanity'
 
-export const staff = {
+export const staff = defineType({
   name: 'staff',
   title: 'Staff & Leadership',
   type: 'document',
   fields: [
-    {
+    defineField({
       name: 'firstName',
       title: 'First Name',
       type: 'string',
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'lastName',
       title: 'Last Name',
       type: 'string',
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'showOnWebsite',
       title: 'Show on Website',
       type: 'boolean',
       description: 'Toggle to control whether this staff member appears on the public website',
       initialValue: true,
-    },
-    {
+    }),
+    defineField({
       name: 'role',
       title: 'Role/Title',
       type: 'string',
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'profileImage',
       title: 'Profile Image',
       type: 'image',
       options: {
         hotspot: true,
       },
-      validation: (Rule: ValidationRule) => Rule.required(),
-    },
-    {
+      validation: rule => rule.required(),
+    }),
+    defineField({
       name: 'biography',
       title: 'Biography',
       type: 'array',
       of: [{ type: 'block' }],
-    },
-    {
+    }),
+    defineField({
       name: 'email',
       title: 'Email',
       type: 'string',
-      validation: (Rule: ValidationRule) => Rule.email(),
-    },
-    {
+      validation: rule => rule.email(),
+    }),
+    defineField({
       name: 'phone',
       title: 'Phone',
       type: 'string',
-    },
-    {
+    }),
+    defineField({
       name: 'order',
       title: 'Display Order',
       type: 'number',
-      validation: (Rule: ValidationRule) => Rule.required().min(0),
-    },
+      validation: rule => rule.required().min(0),
+    }),
   ],
   orderings: [
     {
@@ -87,20 +86,15 @@ export const staff = {
       media: 'profileImage',
       showOnWebsite: 'showOnWebsite',
     },
-    prepare({ firstName, lastName, role, media, showOnWebsite }: { 
-      firstName?: string;
-      lastName?: string;
-      role?: string;
-      media?: ImageValue;
-      showOnWebsite?: boolean;
-    }) {
-      const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Unnamed Staff Member';
-      const visibility = showOnWebsite ? '' : ' [Hidden]';
+    prepare(selection) {
+      const {firstName, lastName, role, media, showOnWebsite} = selection
+      const fullName = [firstName, lastName].filter(Boolean).join(' ') || 'Unnamed Staff Member'
+      const visibility = showOnWebsite ? '' : ' [Hidden]'
       return {
         title: `${fullName}${visibility}`,
         subtitle: role || 'No role specified',
         media,
-      };
+      }
     },
   },
-} 
+}) 
