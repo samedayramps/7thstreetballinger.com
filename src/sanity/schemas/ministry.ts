@@ -1,4 +1,5 @@
 import { ValidationRule } from './types'
+import { SanityAsset } from '@sanity/image-url/lib/types/types'
 
 export const ministry = {
   name: 'ministry',
@@ -49,7 +50,7 @@ export const ministry = {
       leader: 'leader.name',
       media: 'featuredImage',
     },
-    prepare({ title, leader, media }: { title: string; leader?: string; media: any }) {
+    prepare({ title, leader, media }: { title: string; leader?: string; media?: SanityAsset }) {
       return {
         title,
         subtitle: leader ? `Led by ${leader}` : '',
